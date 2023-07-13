@@ -2,10 +2,12 @@
 
 #IMPORTS
 from os.path import exists
+from os import getenv
 
 #VARIABLES
 settings = {
-        'words_file':'/home/tunguso4ka/.local/share/wordle-finder/words-UA',
+        'program_home_path':f'{getenv("HOME")}/.config/wordle-finder/',
+        'dictionary_file_name':'words-UA',
         'suggestion_count':5,
         'help':'wordle-finder:\nexit, вийти - вихід з програми;\nturn, t, хід, х - ввести слово'
         }
@@ -16,9 +18,17 @@ turns    = []
 def load_words(path=''):
     global words
     words = []
-
-    if path == '': path = settings['words_file']
-    if not exists(path): print(f'{path}: не існує.'); quit()
+    if exists(path):
+        print('Використовуємо файл з заданого шляху.')
+    elif exists(settings['dictionary_file_name']):
+        print('Використовуємо файл з текущей теки.')
+        path = settings['dictionary_file_name']
+    elif exists(settings['program_home_path'] + settings['dictionary_file_name']):
+        print('Використовуємо файл з налаштунок')
+        path = settings['program_home_path'] + settings['dictionary_file_name']
+    else:
+        print('Жодних файлів зі словами не існує.')
+        quit()
 
     file = open(path)
     text = file.readlines()
